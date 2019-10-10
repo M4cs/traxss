@@ -14,15 +14,15 @@ class Menu:
      ▐░▌     ▐░▌      ▐░▌ ▐░▌       ▐░▌ ▐░▌   ▐░▌  ▄▄▄▄▄▄▄▄▄█░▌ ▄▄▄▄▄▄▄▄▄█░▌
      ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌     ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
       ▀       ▀         ▀  ▀         ▀  ▀       ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
-       Version: 1.0 | Created by @maxbridgland | github.com/M4cs/Traxss"""
+       Version: 1.1 | Created by @maxbridgland | github.com/M4cs/Traxss"""
         self.menu = """\
-    [1] Scan URL (Full w/ HTML)
+    [1] Scan URL (Full w/ HTML Scan)
 
-    [2] Scan URL (Fast w/ HTML)
+    [2] Scan URL (Fast w/ HTML Scan)
 
-    [3] Scan URL (Full w/o HTML)
+    [3] Scan URL (Full w/o HTML Scan)
 
-    [4] Scan URL (Fast w/o HTML)
+    [4] Scan URL (Fast w/o HTML Scan)
     
     [5] Exit Program\n"""
     
@@ -75,17 +75,28 @@ class Menu:
                         break
                     elif ans == 'y'
                         store_output = True
-                        print('\nPlease Enter The File Name Below\n')
+                        print('\nPlease enter the file name below:\n')
                         while True:
                             report_out = input(ps1)
                             break
                         break
+                print('\nPlease enter form names you would like to include in scope:')
+                print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
+                while True:
+                    tags = input(ps1).lower()
+                    if len(tags) >= 1:
+                        tag_list = tags.split(',')
+                        tags = []
+                        for tag in tag_list:
+                            tags.append(tag.replace(' ', ''))
+                        break
                     else:
-                        print(red('\nUnknown option. Please choose Y or N.\n'))
+                        tags = None
+                        break
                 print(red('[*] This may take a while. Press ENTER to continue or Ctrl-C to quit. [*]'))
                 input()
                 print()
-                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True)
+                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True, tags=tags)
                 scanner.run_on_url()
                 scanner.store_results()
             elif option == '2':
@@ -99,7 +110,7 @@ class Menu:
                         cookies = None
                         break
                     elif ans == 'y':
-                        print('Please Enter Your Cookie String In This Format')
+                        print('Please Enter Your Cookie String In This F
                         print(green('[ex.]'), '<cookiename>:<cookievalue>:<cookiepath>\n')
                         cookies = input(ps1)
                         break
@@ -130,9 +141,22 @@ class Menu:
                             report_out = input(ps1)
                             break
                         break
+                print('\nPlease Enter Form Names You Would Like To Include In Scope')
+                print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
+                while True:
+                    tags = input(ps1).lower()
+                    if len(tags) >= 1:
+                        tag_list = tags.split(',')
+                        tags = []
+                        for tag in tag_list:
+                            tags.append(tag.replace(' ', ''))
+                        break
+                    else:
+                        tags = None
+                        break
                 print(red('\n[*] This May Take A While. Press ENTER To Continue or Ctrl-C to Quit [*]'))
                 input()
-                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, fast_payload=True, html_scan=True)
+                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, fast_payload=True, html_scan=True, tags=tags)
                 scanner.run_on_url()
                 scanner.store_results()
             elif option == '3':

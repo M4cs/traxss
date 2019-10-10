@@ -35,11 +35,12 @@ def encode_url(url, params):
     return full_url
 
 class Scanner:
-    def __init__(self, url, cookies=None, stop_on_first=False, store_report=False, report_output=None, fast_payload=False, html_scan=False):
+    def __init__(self, url, cookies=None, stop_on_first=False, store_report=False, report_output=None, fast_payload=False, html_scan=False, tags=None):
         self.payloads = get_payloads_from_vectors()
         if fast_payload:
             self.payloads = get_payloads_from_vectors(fast=True)
         self.url = url
+        self.tags = tags
         self.stop = stop_on_first
         self.base_url = get_base_url(self.url)
         self.params = self.get_params()
@@ -125,65 +126,105 @@ class Scanner:
             options.add_argument('--headless')
             driver = webdriver.Chrome(chrome_options=options)
             if self.cookies:
-                driver.get(url)
-                driver.add_cookie(self.cookies)
-            for payload in self.payloads:
-                if self.result_count == 2 and self.stop:
-                    break
                 driver.get(self.base_url)
-                driver.implicitly_wait(2)
-                for id in driver.find_elements_by_css_selector('*'):
-                    if self.result_count == 1 and self.stop:
-                        break
+                driver.add_cookie(self.cookies)
+            already_tested_inputs = {}
+            already_tested_textareas = {}
+            for payload in self.payloads:
+                if self.tags:
                     try:
-                        if id.tag_name == 'input':
-                            id.send_keys(payload)
-                            id.send_keys(Keys.ENTER)
+                        for tag in self.tags:
+                            driver.get(self.base_url)
+                            elements = driver.find_element_by_xpath("*")
+                            for element in elements:
+                                if element.tag_name == 'input':
+                                    element.send_keys(payload)
+                                    element.send_keys(Keys.ENTER)
+                            if element.tag_name == 'button':
+                                if element.type == 'submit':
+                                    element.click()
                             try:
-                                new = driver.find_element_by_css_selector('button').click()
-                            except ElementNotInteractableException:
+                                if driver.switch_to.alert.text:
+                                    if self.stop is True:
+                                        self.result_count += 1
+                                        print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+                                        print()
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+                                        print()
+                                        print(green(''.center(50, '='), bold=True))
+                                        driver.quit()
+                                        break
+                                    else:
+                                        self.result_count += 1
+                                        print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+                                        print()
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+                                        print()
+                                        print(green(''.center(50, '='), bold=True))
+                                        self.results['results'].append({
+                                            'count': self.result_count,
+                                            'payload': raw_params,
+                                            'url': target_url
+                                        })
+                                        driver.quit()
+                            except StaleElementReferenceException:
                                 pass
-                        if id.tag_name == 'textarea':
-                            id.send_keys(payload)
-                            id.send_keys(Keys.ENTER)
+                            except NoAlertPresentException:
+                                pass
+                            except NoSuchElementException:
+                                pass
+                    except:
+                        pass
+                else:
+                    try:
+                        driver.get(self.base_url)
+                        elements = driver.find_elements_by_css_selector('*')
+                        for element in elements:
+                            if element.tag_name == 'input':
+                                element.send_keys(payload)
+                                element.send_keys(Keys.ENTER)
+                            if element.tag_name == 'button':
+                                if element.type == 'submit':
+                                    element.click()
                             try:
-                                new = driver.find_element_by_css_selector('button').click()
-                            except ElementNotInteractableException:
+                                if driver.switch_to.alert.text:
+                                    if self.stop is True:
+                                        self.result_count += 1
+                                        print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+                                        print()
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+                                        print()
+                                        print(green(''.center(50, '='), bold=True))
+                                        driver.quit()
+                                        break
+                                    else:
+                                        self.result_count += 1
+                                        print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+                                        print()
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+                                        print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+                                        print()
+                                        print(green(''.center(50, '='), bold=True))
+                                        self.results['results'].append({
+                                            'count': self.result_count,
+                                            'payload': raw_params,
+                                            'url': target_url
+                                        })
+                                        driver.quit()
+                            except StaleElementReferenceException:
                                 pass
-                        if id.tag_name == 'button' or id.tag_name == 'input':
-                            id.click()
-                        if driver.switch_to.alert.text:
-                            if self.stop is True:
-                                self.result_count += 1
-                                print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-                                print()
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-                                print()
-                                print(green(''.center(50, '='), bold=True))
-                                driver.quit()
-                                break
-                            else:
-                                self.result_count += 1
-                                print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-                                print()
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-                                print()
-                                print(green(''.center(50, '='), bold=True))
-                                self.results['results'].append({
-                                    'count': self.result_count,
-                                    'payload': raw_params,
-                                    'url': target_url
-                                })
-                                driver.quit()
-                    except NoAlertPresentException:
-                        pass
-                    except StaleElementReferenceException:
-                        pass
-                    except ElementNotInteractableException:
+                            except NoAlertPresentException:
+                                pass
+                            except NoSuchElementException:
+                                pass
+                    except:
                         pass
         print(blue('[*] Completed Scan on URL'))
         if self.result_count == 0:
