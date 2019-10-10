@@ -2,7 +2,7 @@
 
 <p align="center">
   <b>Automated Vulnerability Scanner for XSS | Written in Python3 | Utilizes Selenium Headless</b>
-  <b>Traxss is a Hacktoberfest Project! If you are looking for a place to make Pull Requests, feel free here!</b>
+  <b>Traxss is a Hacktoberfest Project! If you are looking for a place to make Pull Requests, feel free here!</b></br>
   <a href="https://github.com/M4cs/traxss/network"><img src="https://img.shields.io/github/forks/M4cs/traxss# .svg" alt="Forks"></a>
   <a href="https://github.com/M4cs/traxss/stargazers"><img src="https://img.shields.io/github/stars/M4cs/traxss.svg" atl="Stars"></a>
   <a href="https://github.com/M4cs/traxss/issues"><img src="https://img.shields.io/github/issues/M4cs/traxss.svg" alt="Issues"></a>
