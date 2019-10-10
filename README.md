@@ -1,5 +1,5 @@
 # Traxss
-## Automated XSS Vulnerablity Scanner Written In Python3
+## Automated XSS Vulnerablity Scanner Written In Python3 WRITTEN FOR HACKTOBERFEST
 
 <p align="center">
   <a href="https://github.com/M4cs/traxss/network"><img src="https://img.shields.io/github/forks/M4cs/traxss# .svg" alt="Forks"></a>
