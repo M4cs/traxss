@@ -1,4 +1,4 @@
-# Traxass
+# Traxss
 ## Automated XSS Vulnerablity Scanner Written In Python3
 
 <p align="center">
