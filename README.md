@@ -19,11 +19,7 @@ Traxss* is an automated framework to scan URLs and webpages for XSS vulnerabilit
 
 ## _Installing Requirements_
 
-* To install the requirements run:
-
-```
-pip3 install -r requirements.txt
-```
+* To install the requirements run: ```pip3 install -r requirements.txt```
 
 * You will also need Chromedriver installed.
   * To install on <b>MacOS</b> run:  ```  brew install cask chromedriver  ```
@@ -34,10 +30,7 @@ pip3 install -r requirements.txt
 
 ## _Running Traxss_
 
-To run Traxss run:
-```
-python3 traxss.py
-```
+To run Traxss run: ```python3 traxss.py```
 This will display a menu that will help walk you through the features.
 
 # __Features__
