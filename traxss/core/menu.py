@@ -39,22 +39,22 @@ class Menu:
         while True:
             option = input(ps1)
             if option == '1':
-                print('\nPlease Enter URL To Scan w/ Parameters Included')
+                print('\nPlease enter URL to scan w/ parameters included:')
                 print(green('[ex.]'), 'https://xss-game.appspot.com/level1/frame?query=test\n')
                 url = input(ps1)
-                print('\nWould You Like To Add A Cookie String?')
+                print('\nWould you like to add a cookie string?')
                 while True:
                     ans = input('\n[Y\\n]> ').lower()
                     if ans == 'n':
                         cookies = None
                         break
                     elif ans == 'y':
-                        print('Please Enter Your Cookie String In This Format')
+                        print('Please enter your cookie string in this format:')
                         print(green('[ex.]'), '<cookiename>:<cookievalue>:<cookiepath>\n')
                         cookies = input(ps1)
                         break
                     else:
-                        print('\nUnknown Option. Please Choose Y or N\n')
+                        print('\nUnknown option. Please choose Y or N.\n')
                 print('\nWould you like to stop after the first vulnerability found?')
                 while True:
                     ans = input('\n[Y\\n]> ').lower()
@@ -65,22 +65,24 @@ class Menu:
                         stop_on_first = True
                         break
                     else:
-                        print(red('\nUnknown Option. Please Choose Y or N\n'))
-                print('\nWould you like to store results to a JSON file?\n')
+                        print(red('\nUnknown option. Please choose Y or N.\n'))
+                print('\nWould you like to store the results in a JSON file?\n')
                 while True:
                     ans = input('[Y\\n]> ').lower()
                     if ans == 'n':
                         store_output = False
                         report_out = None
                         break
-                    else:
+                    elif ans == 'y'
                         store_output = True
                         print('\nPlease Enter The File Name Below\n')
                         while True:
                             report_out = input(ps1)
                             break
                         break
-                print(red('[*] This May Take A While. Press ENTER To Continue or Ctrl-C to Quit [*]'))
+                    else:
+                        print(red('\nUnknown option. Please choose Y or N.\n'))
+                print(red('[*] This may take a while. Press ENTER to continue or Ctrl-C to quit. [*]'))
                 input()
                 print()
                 scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True)
