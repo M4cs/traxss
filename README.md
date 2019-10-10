@@ -30,8 +30,8 @@ Traxss* is an automated framework to scan URLs and webpages for XSS vulnerabilit
 
 ## _Running Traxss_
 
-To run Traxss run: ```python3 traxss.py```
-This will display a menu that will help walk you through the features.
+* To run Traxss run: ```python3 traxss.py```</br>
+* This will display a menu that will help walk you through the features.
 
 # __Features__
 
