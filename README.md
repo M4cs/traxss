@@ -1,4 +1,4 @@
-# Traxass
+# Traxss
 ## Automated XSS Vulnerablity Scanner Written In Python3
 
 <p align="center">
@@ -6,7 +6,7 @@
   <a href="https://github.com/M4cs/traxss/stargazers"><img src="https://img.shields.io/github/stars/M4cs/traxss.svg" atl="Stars"></a>
   <a href="https://github.com/M4cs/traxss/issues"><img src="https://img.shields.io/github/issues/M4cs/traxss.svg" alt="Issues"></a>
   <a href="http://www.python.org/download/"><img alt="Python 3.6+" src="https://img.shields.io/badge/Python-3.6+-yellow.svg"></a></br>
-  <img src="https://media.giphy.com/media/QBMt4m0Hlql8VeoEhS/giphy.gif">
+  <a href="https://asciinema.org/a/273492" target="_blank"><img src="https://asciinema.org/a/273492.svg" /></a>
 </p>
 
 # What is Traxss
