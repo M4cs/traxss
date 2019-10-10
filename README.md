@@ -48,7 +48,7 @@ This scan is the same as the full w/ HTML but it will only use 7 attack vectors 
 
 ## Fast Scan w/o HTML
 
-This scan is the same as the full w/o HTML but it will only use 7 attack vectors rather than the 575+ vectors.
+This scan is the same as the fast w/o HTML but it will only use 7 attack vectors rather than the 575+ vectors.
 
 # Contributions
 
