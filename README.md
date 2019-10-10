@@ -26,16 +26,10 @@ pip3 install -r requirements.txt
 ```
 
 * You will also need Chromedriver installed.
-  * To install on <b>MacOS</b> run:
-  ```
-  brew install cask chromedriver
-  ```
+  * To install on <b>MacOS</b> run:  ```  brew install cask chromedriver  ```
   * To install on <b>Windows</b> find the Chromedriver installer at <a href="https://chromedriver.chromium.org/downloads"></a>
   * To install on <b>Linux</b>:
-    * Debian based Linux distros: run:
-    ```
-    sudo apt-get install chromium-chromedriver
-    ```
+    * Debian based Linux distros: run:    ```sudo apt-get install chromium-chromedriver```
     * Other distros : find the correct install method for your distro.
 
 ## _Running Traxss_
