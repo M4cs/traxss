@@ -1,4 +1,4 @@
-# __Traxss__
+# <u><b>Traxss</b></u>
 
 <p align="center">
   <b>Automated Vulnerability Scanner for XSS || Written in Python3 || Utilizes Selenium Headless</b></br>
@@ -10,7 +10,7 @@
   <a href="https://asciinema.org/a/273492" target="_blank"><img src="https://asciinema.org/a/273492.svg" /></a>
 </p>
 
-# What is Traxss
+# __What is Traxss__
 
 Traxss* is an automated framework to scan URLs and webpages for XSS vulnerabilities. It includes over 575 payloads to test with and multiple options for robustness of tests. View the gif above to see a preview of the fastest type of scan.</br>
     * **Traxss is still in development and if you'd like to help PLEASE contribute with fixes or feature additions.**
