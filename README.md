@@ -8,7 +8,8 @@
 <a href="http://www.python.org/download/"><img alt="Python 3.6+" src="https://img.shields.io/badge/Python-3.6+-yellow.svg"></a></br>
 <a href="https://asciinema.org/a/273492" target="_blank"><img src="https://asciinema.org/a/273492.svg" /></a>
 </p>
-## Background
+
+# Background
 
 ### Traxss is a Hacktoberfest Project! If you are looking for a place to make contribute, please feel free.
 
