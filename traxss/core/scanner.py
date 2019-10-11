@@ -16,11 +16,11 @@ from selenium.webdriver.support import expected_conditions
 def get_payloads_from_vectors(fast=False):
     payloads = []
     if not fast:
-        with open('traxss/core/constants/vectors.txt', 'r') as vector_file:
+        with open('traxss/core/constants/vectors.txt', 'r', encoding = "utf-8") as vector_file:
             for vector in vector_file.readlines():
                 payloads.append(vector)
     else:
-        with open('traxss/core/constants/vectors.txt', 'r') as vector_file:
+        with open('traxss/core/constants/vectors.txt', 'r', encoding = "utf-8") as vector_file:
             for vector in vector_file.readlines():
                 payloads.append(vector)
     return payloads
