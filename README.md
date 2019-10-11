@@ -1,6 +1,6 @@
 # Traxss
 
->>>> <b>Automated Vulnerability Scanner for XSS</b> | <b>Written in Python3</b> | <b>Utilizes Selenium Headless</b>
+<b>Automated Vulnerability Scanner for XSS</b> | <b>Written in Python3</b> | <b>Utilizes Selenium Headless</b>
 <p align="center">
 <a href="https://github.com/M4cs/traxss/network"><img src="https://img.shields.io/github/forks/M4cs/traxss# .svg" alt="Forks"></a>
 <a href="https://github.com/M4cs/traxss/stargazers"><img src="https://img.shields.io/github/stars/M4cs/traxss.svg" atl="Stars"></a>
