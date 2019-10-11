@@ -73,7 +73,7 @@ class Menu:
                         store_output = False
                         report_out = None
                         break
-                    elif ans == 'y'
+                    elif ans == 'y':
                         store_output = True
                         print('\nPlease enter the file name below:\n')
                         while True:
@@ -134,7 +134,7 @@ class Menu:
                         store_output = False
                         report_out = None
                         break
-                    elif ans = 'y':
+                    elif ans == 'y':
                         store_output = True
                         print('\nPlease Enter The File Name Below\n')
                         while True:
