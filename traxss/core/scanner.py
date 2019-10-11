@@ -1,8 +1,5 @@
-import sys
-import requests
-import json
-import urllib
-import os
+import sys, requests, json, urllib, os
+from .differ import Differ
 from crayons import *
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -35,7 +32,7 @@ def encode_url(url, params):
     return full_url
 
 class Scanner:
-    def __init__(self, url, cookies=None, stop_on_first=False, store_report=False, report_output=None, fast_payload=False, html_scan=False):
+    def __init__(self, url, cookies=None, stop_on_first=False, store_report=False, report_output=None, fast_payload=False, html_scan=False, tags=None):
         self.payloads = get_payloads_from_vectors()
         if fast_payload:
             self.payloads = get_payloads_from_vectors(fast=True)
@@ -88,8 +85,12 @@ class Scanner:
                     driver.add_cookie(self.cookies)
                 driver.get(target_url)
                 driver.implicitly_wait(1)
+                #Don't make two selenium requests.
+                source_ = requests.get(self.base_url, cookies=self.cookies).text
+                diff_source = driver.page_source
+                DifDif = Differ(source_, diff_source)
                 try:
-                    if driver.switch_to.alert.text:
+                    if driver.switch_to.alert.text or DifDif.isDifferent():
                         if self.stop is True:
                             self.result_count += 1
                             print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
@@ -127,6 +128,9 @@ class Scanner:
             if self.cookies:
                 driver.get(url)
                 driver.add_cookie(self.cookies)
+            source_ = requests.get(self.base_url, cookies=self.cookies).text
+            diff_source = driver.page_source
+            DifDif = Differ(source_, diff_source)
             for payload in self.payloads:
                 if self.result_count == 2 and self.stop:
                     break
@@ -145,7 +149,7 @@ class Scanner:
                                 pass
                         if id.tag_name == 'button' or id.tag_name == 'input':
                             id.click()
-                        if driver.switch_to.alert.text:
+                        if driver.switch_to.alert.text or DifDif.isDifferent():
                             if self.stop is True:
                                 self.result_count += 1
                                 print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
