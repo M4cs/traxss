@@ -1,5 +1,6 @@
 from crayons import *
 from traxss.core.scanner import Scanner
+import sys
 class Menu:
     def __init__(self):
         self.banner = """\
@@ -35,7 +36,11 @@ class Menu:
         print(blue(self.banner))
         print('\nWelcome To Traxss - A URL XSS Scanner\n')
         print(self.menu)
-        ps1 = str(blue('[') + white('traxss') + blue(']') + '> ')
+        if 'win32' in sys.platform or 'win64' in sys.platform:
+            ps1 = str('traxss> ')
+        else:
+            ps1 = str(blue('[') + white('traxss') + blue(']') + '> ')
+        
         while True:
             option = input(ps1)
             if option == '1':
