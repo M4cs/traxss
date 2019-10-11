@@ -85,23 +85,23 @@ class Menu:
                             report_out = input(ps1)
                             break
                         break
-                #print('\nPlease enter form names you would like to include in scope:')
-                #print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
-                #while True:
-                #    tags_ = input(ps1).lower()
-                #    if len(tags_) >= 1:
-                #        tag_list = tags_.split(',')
-                #        tags_ = []
-                #        for tag in tag_list:
-                #            tags_.append(tag.replace(' ', ''))
-                #        break
-                #    else:
-                #        tags_ = None
-                #        break
+                print('\nPlease enter form names you would like to include in scope:')
+                print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
+                while True:
+                    tags_ = input(ps1).lower()
+                    if len(tags_) >= 1:
+                        tag_list = tags_.split(',')
+                        tags_ = []
+                        for tag in tag_list:
+                            tags_.append(tag.replace(' ', ''))
+                        break
+                    else:
+                        tags_ = None
+                        break
                 print(red('[*] This may take a while. Press ENTER to continue or Ctrl-C to quit.. [*]'))
                 input()
                 print()
-                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True)
+                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True, tags=tags_)
                 scanner.run_on_url()
                 scanner.store_results()
             elif option == '2':
@@ -147,22 +147,22 @@ class Menu:
                             break
                     else:
                         print(red('\nUnknown option. Please choose Y or N.\n'))
-                #print('\nPlease enter form names you would like to include in scope:')
-                #print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
-                #while True:
-                #    tags_ = input(ps1).lower()
-                #    if len(tags_) >= 1:
-                #        tag_list = tags_.split(',')
-                #        tags_ = []
-                #        for tag in tag_list:
-                #            tags_.append(tag.replace(' ', ''))
-                #        break
-                #    else:
-                #        tags_ = None
-                #        break
+                print('\nPlease enter form names you would like to include in scope:')
+                print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
+                while True:
+                    tags_ = input(ps1).lower()
+                    if len(tags_) >= 1:
+                        tag_list = tags_.split(',')
+                        tags_ = []
+                        for tag in tag_list:
+                            tags_.append(tag.replace(' ', ''))
+                        break
+                    else:
+                        tags_ = None
+                        break
                 print(red('\n[*] This may take a while. Press ENTER to continue or Ctrl-C to quit. [*]'))
                 input()
-                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, fast_payload=True, html_scan=True)
+                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, fast_payload=True, html_scan=True, tags=tags_)
                 scanner.run_on_url()
                 scanner.store_results()
             elif option == '3':
