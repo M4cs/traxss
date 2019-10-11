@@ -82,6 +82,8 @@ class Scanner:
                 raw_params = urllib.parse.urlencode(self.params)
                 options = webdriver.ChromeOptions()
                 options.add_argument('--headless')
+                options.add_argument('--disable-dev-shm-usage') #Dev Tools Error
+                options.add_argument('--no-sandbox')
                 driver = webdriver.Chrome(chrome_options=options)
                 if self.cookies:
                     driver.get(url)
