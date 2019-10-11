@@ -131,19 +131,12 @@ class Scanner:
                 if self.result_count == 2 and self.stop:
                     break
                 driver.get(self.base_url)
-                driver.implicitly_wait(2)
-                for id in driver.find_elements_by_css_selector('*'):
+                webelement_list = WebDriverWait(driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
+                for id in webelement_list:
                     if self.result_count == 1 and self.stop:
                         break
                     try:
-                        if id.tag_name == 'input':
-                            id.send_keys(payload)
-                            id.send_keys(Keys.ENTER)
-                            try:
-                                new = driver.find_element_by_css_selector('button').click()
-                            except ElementNotInteractableException:
-                                pass
-                        if id.tag_name == 'textarea':
+                        if id.tag_name == 'textarea' or id.tag_name == 'input':
                             id.send_keys(payload)
                             id.send_keys(Keys.ENTER)
                             try:
