@@ -147,7 +147,7 @@ class Scanner:
             print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
             print()
             print(green(''.center(50, '='), bold=True))
-            return 1
+            return True
         else:
             self.result_count += 1
             print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
@@ -162,7 +162,7 @@ class Scanner:
                 'payload': raw_params,
                 'url': target_url
             })
-            return 0
+            return False
 
     def store_results(self):
         if self.store_report:
