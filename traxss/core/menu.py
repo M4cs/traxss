@@ -88,20 +88,20 @@ class Menu:
                 print('\nPlease enter form names you would like to include in scope:')
                 print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
                 while True:
-                    tags = input(ps1).lower()
-                    if len(tags) >= 1:
-                        tag_list = tags.split(',')
-                        tags = []
+                    tags_ = input(ps1).lower()
+                    if len(tags_) >= 1:
+                        tag_list = tags_.split(',')
+                        tags_ = []
                         for tag in tag_list:
-                            tags.append(tag.replace(' ', ''))
+                            tags_.append(tag.replace(' ', ''))
                         break
                     else:
-                        tags = None
+                        tags_ = None
                         break
                 print(red('[*] This may take a while. Press ENTER to continue or Ctrl-C to quit.. [*]'))
                 input()
                 print()
-                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True, tags=tags)
+                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, html_scan=True, tags=tags_)
                 scanner.run_on_url()
                 scanner.store_results()
             elif option == '2':
@@ -150,19 +150,19 @@ class Menu:
                 print('\nPlease enter form names you would like to include in scope:')
                 print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
                 while True:
-                    tags = input(ps1).lower()
-                    if len(tags) >= 1:
-                        tag_list = tags.split(',')
-                        tags = []
+                    tags_ = input(ps1).lower()
+                    if len(tags_) >= 1:
+                        tag_list = tags_.split(',')
+                        tags_ = []
                         for tag in tag_list:
-                            tags.append(tag.replace(' ', ''))
+                            tags_.append(tag.replace(' ', ''))
                         break
                     else:
-                        tags = None
+                        tags_ = None
                         break
                 print(red('\n[*] This may take a while. Press ENTER to continue or Ctrl-C to quit. [*]'))
                 input()
-                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, fast_payload=True, html_scan=True, tags=tags)
+                scanner = Scanner(url, cookies, stop_on_first, store_output, report_out, fast_payload=True, html_scan=True, tags=tags_)
                 scanner.run_on_url()
                 scanner.store_results()
             elif option == '3':
