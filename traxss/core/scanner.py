@@ -69,6 +69,9 @@ class Scanner:
 
     def run_on_url(self):
         print(blue('[*] Running URL Query Scan [*]'))
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(chrome_options=options)
         for payload in self.payloads:
             if self.result_count == 1 and self.stop:
                 break
@@ -77,9 +80,6 @@ class Scanner:
                 self.params[param] = payload
                 target_url = encode_url(self.base_url, self.params)
                 raw_params = urllib.parse.urlencode(self.params)
-                options = webdriver.ChromeOptions()
-                options.add_argument('--headless')
-                driver = webdriver.Chrome(chrome_options=options)
                 if self.cookies:
                     driver.get(url)
                     driver.add_cookie(self.cookies)
@@ -91,40 +91,14 @@ class Scanner:
                 DifDif = Differ(source_, diff_source)
                 try:
                     if driver.switch_to.alert.text or DifDif.isDifferent():
-                        if self.stop is True:
-                            self.result_count += 1
-                            print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-                            print()
-                            print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-                            print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-                            print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-                            print()
-                            print(green(''.center(50, '='), bold=True))
+                        if self.count_results(raw_params, target_url): 
                             driver.quit()
-                            break
-                        else:
-                            self.result_count += 1
-                            print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-                            print()
-                            print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-                            print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-                            print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-                            print()
-                            print(green(''.center(50, '='), bold=True))
-                            self.results['results'].append({
-                                'count': self.result_count,
-                                'payload': raw_params,
-                                'url': target_url
-                            })
-                            driver.quit()
+                            break;
                 except NoAlertPresentException:
                     pass
         print(blue('[*] Completed URL Query Scan [*]'))
         if self.html_scan:
             print(blue('[*] Starting HTML XSS Scan [*]'))
-            options = webdriver.ChromeOptions()
-            options.add_argument('--headless')
-            driver = webdriver.Chrome(chrome_options=options)
             if self.cookies:
                 driver.get(url)
                 driver.add_cookie(self.cookies)
@@ -150,32 +124,9 @@ class Scanner:
                         if id.tag_name == 'button' or id.tag_name == 'input':
                             id.click()
                         if driver.switch_to.alert.text or DifDif.isDifferent():
-                            if self.stop is True:
-                                self.result_count += 1
-                                print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-                                print()
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-                                print()
-                                print(green(''.center(50, '='), bold=True))
+                            if self.count_results(raw_params, target_url): 
                                 driver.quit()
-                                break
-                            else:
-                                self.result_count += 1
-                                print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-                                print()
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-                                print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-                                print()
-                                print(green(''.center(50, '='), bold=True))
-                                self.results['results'].append({
-                                    'count': self.result_count,
-                                    'payload': raw_params,
-                                    'url': target_url
-                                })
-                                driver.quit()
+                                break;
                     except NoAlertPresentException:
                         pass
                     except StaleElementReferenceException:
@@ -185,6 +136,33 @@ class Scanner:
         print(blue('[*] Completed Scan on URL'))
         if self.result_count == 0:
             print(red('[!] No Results Found. Warning This Does NOT Mean You Are Not Still Vulnerable [!]'))
+
+    def count_results(self, raw_params, target_url):
+        if self.stop is True:
+            self.result_count += 1
+            print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+            print()
+            print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+            print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+            print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+            print()
+            print(green(''.center(50, '='), bold=True))
+            return 1
+        else:
+            self.result_count += 1
+            print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+            print()
+            print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+            print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+            print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+            print()
+            print(green(''.center(50, '='), bold=True))
+            self.results['results'].append({
+                'count': self.result_count,
+                'payload': raw_params,
+                'url': target_url
+            })
+            return 0
 
     def store_results(self):
         if self.store_report:
