@@ -1,5 +1,5 @@
 import sys, requests, json, urllib, os
-from .differ import Differ
+from differ import Differ
 from crayons import *
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -67,102 +67,87 @@ class Scanner:
         params = dict(urllib.parse.parse_qsl(query_string))
         return params
 
-    def run_on_url(self):
-        print(blue('[*] Running URL Query Scan [*]'))
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        driver = webdriver.Chrome(chrome_options=options)
-        for payload in self.payloads:
-            if self.result_count == 1 and self.stop:
-                break
-            for param in self.params.keys():
-                previous_value = self.params[param]
-                self.params[param] = payload
-                target_url = encode_url(self.base_url, self.params)
-                raw_params = urllib.parse.urlencode(self.params)
-                if self.cookies:
-                    driver.get(url)
-                    driver.add_cookie(self.cookies)
-                driver.get(target_url)
-                driver.implicitly_wait(1)
-                #Don't make two selenium requests.
-                source_ = requests.get(self.base_url, cookies=self.cookies).text
-                diff_source = driver.page_source
-                DifDif = Differ(source_, diff_source)
-                try:
-                    if driver.switch_to.alert.text or DifDif.isDifferent():
-                        if self.count_results(raw_params, target_url): 
-                            driver.quit()
-                            break;
-                except NoAlertPresentException:
-                    pass
-        print(blue('[*] Completed URL Query Scan [*]'))
-        if self.html_scan:
-            print(blue('[*] Starting HTML XSS Scan [*]'))
+    def query_scanner(self, payload):
+        for param in self.params.keys():
+            previous_value = self.params[param]
+            self.params[param] = payload
+            target_url = encode_url(self.base_url, self.params)
+            raw_params = urllib.parse.urlencode(self.params)
             if self.cookies:
-                driver.get(url)
-                driver.add_cookie(self.cookies)
+                #What does this url variable represent, any value? - Chase 
+                self.driver.get(url)
+                self.driver.add_cookie(self.cookies)
+            self.driver.get(target_url)
+            self.driver.implicitly_wait(1)
+            #Don't make two selenium requests.
             source_ = requests.get(self.base_url, cookies=self.cookies).text
-            diff_source = driver.page_source
+            diff_source = self.driver.page_source
             DifDif = Differ(source_, diff_source)
-            for payload in self.payloads:
-                if self.result_count == 2 and self.stop:
-                    break
-                driver.get(self.base_url)
-                webelement_list = WebDriverWait(driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
-                for id in webelement_list:
-                    if self.result_count == 1 and self.stop:
-                        break
+            try:
+                if self.driver.switch_to.alert.text or DifDif.isDifferent():
+                    if self.count_results(raw_params, target_url):
+                        self.driver.quit()
+                        self.final_report()
+            except NoAlertPresentException:
+                pass
+
+    def html_scanner(self, payload):
+        self.driver.get(self.base_url)
+        if self.cookies:
+            self.driver.get(url)
+            self.driver.add_cookie(self.cookies)
+        source_ = requests.get(self.base_url, cookies=self.cookies).text
+        diff_source = self.driver.page_source
+        DifDif = Differ(source_, diff_source)
+        webelement_list = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
+        for id in webelement_list:
+            try:
+                if id.tag_name == 'textarea' or id.tag_name == 'input':
+                    id.send_keys(payload)
+                    id.send_keys(Keys.ENTER)
                     try:
-                        if id.tag_name == 'textarea' or id.tag_name == 'input':
-                            id.send_keys(payload)
-                            id.send_keys(Keys.ENTER)
-                            try:
-                                new = driver.find_element_by_css_selector('button').click()
-                            except ElementNotInteractableException:
-                                pass
-                        if id.tag_name == 'button' or id.tag_name == 'input':
-                            id.click()
-                        if driver.switch_to.alert.text or DifDif.isDifferent():
-                            if self.count_results(raw_params, target_url): 
-                                driver.quit()
-                                break;
-                    except NoAlertPresentException:
-                        pass
-                    except StaleElementReferenceException:
-                        pass
+                        new = self.driver.find_element_by_css_selector('button').click()
                     except ElementNotInteractableException:
                         pass
-        print(blue('[*] Completed Scan on URL'))
-        if self.result_count == 0:
-            print(red('[!] No Results Found. Warning This Does NOT Mean You Are Not Still Vulnerable [!]'))
+                if id.tag_name == 'button' or id.tag_name == 'input':
+                        id.click()
+                if self.driver.switch_to.alert.text or DifDif.isDifferent():
+                    if self.count_results(raw_params, target_url): 
+                        self.driver.quit()
+                        self.final_report()
+            except NoAlertPresentException:
+                pass
+            except StaleElementReferenceException:
+                pass
+            except ElementNotInteractableException:
+                pass
 
+    def run_on_url(self):
+        print(blue('[*] Running XSS Scan [*]'))
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        self.driver = webdriver.Chrome(chrome_options=options)
+        for payload in self.payloads:
+            self.query_scanner(payload)
+            if self.html_scan:
+                self.html_scanner(payload)
+        self.final_report()
+        
     def count_results(self, raw_params, target_url):
-        if self.stop is True:
-            self.result_count += 1
-            print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-            print()
-            print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-            print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-            print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-            print()
-            print(green(''.center(50, '='), bold=True))
-            return True
-        else:
-            self.result_count += 1
-            print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
-            print()
-            print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
-            print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
-            print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
-            print()
-            print(green(''.center(50, '='), bold=True))
-            self.results['results'].append({
-                'count': self.result_count,
-                'payload': raw_params,
-                'url': target_url
-            })
-            return False
+        self.result_count += 1
+        print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
+        print()
+        print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
+        print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
+        print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+        print()
+        print(green(''.center(50, '='), bold=True))
+        self.results['results'].append({
+            'count': self.result_count,
+            'payload': raw_params,
+            'url': target_url
+        })
+        return True if self.stop and ((self.results_count >= 2 and self.html_scan) or (self.result_count >= 1 and not self.html_scan)) else False
 
     def store_results(self):
         if self.store_report:
@@ -182,3 +167,12 @@ class Scanner:
                 json_file.seek(0)
                 json.dump(obj, json_file, indent=4)
             print(blue('[*] Stored Results To {}'.format(real_path)))
+            
+    def final_report(self):
+        print(blue('[*] Completed Scan on URL'))
+        if self.result_count == 0:
+            print(red('[!] No Results Found. Warning This Does NOT Mean You Are Not Still Vulnerable [!]'))
+        else: 
+            self.store_results()
+        input("Press any key to exit.....")
+        os.exit(0)
