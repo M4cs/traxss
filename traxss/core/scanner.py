@@ -1,5 +1,5 @@
 import sys, requests, json, urllib, os
-from differ import Differ
+from .differ import Differ
 from crayons import *
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
