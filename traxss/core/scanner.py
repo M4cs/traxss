@@ -1,9 +1,8 @@
 import sys, requests, json, urllib, os
-from .differ import Differ
 from crayons import *
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoAlertPresentException, NoSuchElementException, ElementNotInteractableException
+from selenium.common.exceptions import NoAlertPresentException, NoSuchElementException, ElementNotInteractableException, TimeoutException
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
@@ -72,50 +71,47 @@ class Scanner:
             previous_value = self.params[param]
             self.params[param] = payload
             target_url = encode_url(self.base_url, self.params)
-            raw_params = urllib.parse.urlencode(self.params)
+            self.raw_params = urllib.parse.urlencode(self.params)
             if self.cookies:
                 #What does this url variable represent, any value? - Chase 
                 self.driver.get(url)
                 self.driver.add_cookie(self.cookies)
             self.driver.get(target_url)
-            self.driver.implicitly_wait(1)
-            #Don't make two selenium requests.
-            source_ = requests.get(self.base_url, cookies=self.cookies).text
-            diff_source = self.driver.page_source
-            DifDif = Differ(source_, diff_source)
             try:
-                if self.driver.switch_to.alert.text or DifDif.isDifferent():
-                    if self.count_results(raw_params, target_url):
-                        self.driver.quit()
-                        self.final_report()
-            except NoAlertPresentException:
+                WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
+                self.driver.switch_to.alert.accept()
+                if self.count_results(self.raw_params, target_url):
+                    self.driver.quit()
+                    self.final_report()
+            except TimeoutException:
                 pass
 
     def html_scanner(self, payload):
         self.driver.get(self.base_url)
         if self.cookies:
+            #What does this url variable represent, any value? - Chase 
             self.driver.get(url)
             self.driver.add_cookie(self.cookies)
-        source_ = requests.get(self.base_url, cookies=self.cookies).text
-        diff_source = self.driver.page_source
-        DifDif = Differ(source_, diff_source)
+        target_url = self.base_url
         webelement_list = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
         for id in webelement_list:
             try:
                 if id.tag_name == 'textarea' or id.tag_name == 'input':
                     id.send_keys(payload)
-                    id.send_keys(Keys.ENTER)
-                    try:
-                        new = self.driver.find_element_by_css_selector('button').click()
-                    except ElementNotInteractableException:
-                        pass
-                if id.tag_name == 'button' or id.tag_name == 'input':
-                        id.click()
-                if self.driver.switch_to.alert.text or DifDif.isDifferent():
-                    if self.count_results(raw_params, target_url): 
+                    #id.send_keys(Keys.ENTER)
+                    WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
+                    self.driver.switch_to.alert.accept()
+                    if self.count_results(self.raw_params, target_url):
                         self.driver.quit()
                         self.final_report()
-            except NoAlertPresentException:
+                if id.tag_name == 'button' or id.tag_name == 'input':
+                    id.click()
+                    WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
+                    self.driver.switch_to.alert.accept()
+                    if self.count_results(self.raw_params, target_url):
+                        self.driver.quit()
+                        self.final_report()
+            except TimeoutException:
                 pass
             except StaleElementReferenceException:
                 pass
