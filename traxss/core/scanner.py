@@ -72,9 +72,8 @@ class Scanner:
             self.params[param] = payload
             target_url = encode_url(self.base_url, self.params)
             self.raw_params = urllib.parse.urlencode(self.params)
-            if self.cookies:
-                #What does this url variable represent, any value? - Chase 
-                self.driver.get(url)
+            if self.cookies: 
+                self.driver.get(self.url)
                 self.driver.add_cookie(self.cookies)
             self.driver.get(target_url)
             try:
@@ -89,8 +88,7 @@ class Scanner:
     def html_scanner(self, payload):
         self.driver.get(self.base_url)
         if self.cookies:
-            #What does this url variable represent, any value? - Chase 
-            self.driver.get(url)
+            self.driver.get(self.url)
             self.driver.add_cookie(self.cookies)
         target_url = self.base_url
         webelement_list = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
@@ -98,7 +96,6 @@ class Scanner:
             try:
                 if id.tag_name == 'textarea' or id.tag_name == 'input':
                     id.send_keys(payload)
-                    #id.send_keys(Keys.ENTER)
                     WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
                     self.driver.switch_to.alert.accept()
                     if self.count_results(self.raw_params, target_url):

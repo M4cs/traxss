@@ -81,9 +81,7 @@ class Menu:
                     elif ans == 'y':
                         store_output = True
                         print('\nPlease enter the file name below:\n')
-                        while True:
-                            report_out = input(ps1)
-                            break
+                        report_out = input(ps1)
                         break
                 print('\nPlease enter form names you would like to include in scope:')
                 print(blue('[')+white('ex.')+blue(']') + ' query-box, search-box')
@@ -142,9 +140,8 @@ class Menu:
                     elif ans == 'y':
                         store_output = True
                         print('\nPlease Enter The File Name Below\n')
-                        while True:
-                            report_out = input(ps1)
-                            break
+                        report_out = input(ps1)
+                        break
                     else:
                         print(red('\nUnknown option. Please choose Y or N.\n'))
                 print('\nPlease enter form names you would like to include in scope:')
@@ -203,9 +200,7 @@ class Menu:
                     else:
                         store_output = True
                         print('\nPlease Enter The File Name Below\n')
-                        while True:
-                            report_out = input(ps1)
-                            break
+                        report_out = input(ps1)
                         break
                 print(red('[*] This may take a while. Press ENTER to continue or Ctrl-C to quit. [*]'))
                 input()
@@ -251,9 +246,7 @@ class Menu:
                     else:
                         store_output = True
                         print('\nPlease Enter The File Name Below\n')
-                        while True:
-                            report_out = input(ps1)
-                            break
+                        report_out = input(ps1)
                         break
                 print(red('\n[*] This may take a while. Press ENTER to continue or Ctrl-C to quit. [*]'))
                 input()
