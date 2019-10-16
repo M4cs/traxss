@@ -140,7 +140,7 @@ class Scanner:
             'payload': raw_params,
             'url': target_url
         })
-        return True if self.stop and ((self.results_count >= 2 and self.html_scan) or (self.result_count >= 1 and not self.html_scan)) else False
+        return True if self.stop and ((self.result_count >= 2 and self.html_scan) or (self.result_count >= 1 and not self.html_scan)) else False
 
     def store_results(self):
         if self.store_report:
