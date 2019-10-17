@@ -79,33 +79,27 @@ class Scanner:
             try:
                 WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
                 self.driver.switch_to.alert.accept()
-                if self.count_results(self.raw_params, target_url):
+                if self.count_results(self.raw_params, target_url, "URL Query"):
                     self.driver.quit()
                     self.final_report()
             except TimeoutException:
                 pass
 
-    def html_scanner(self, payload):
-        self.driver.get(self.base_url)
-        if self.cookies:
-            self.driver.get(self.url)
-            self.driver.add_cookie(self.cookies)
-        target_url = self.base_url
-        webelement_list = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
+    def html_scanner(self, payload, webelement_list, target_url):
         for id in webelement_list:
             try:
                 if id.tag_name == 'textarea' or id.tag_name == 'input':
                     id.send_keys(payload)
                     WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
                     self.driver.switch_to.alert.accept()
-                    if self.count_results(self.raw_params, target_url):
+                    if self.count_results(self.raw_params, target_url, "HTML Injection"):
                         self.driver.quit()
                         self.final_report()
                 if id.tag_name == 'button' or id.tag_name == 'input':
                     id.click()
                     WebDriverWait(self.driver, 1).until(expected_conditions.alert_is_present())
                     self.driver.switch_to.alert.accept()
-                    if self.count_results(self.raw_params, target_url):
+                    if self.count_results(self.raw_params, target_url, "HTML Injection"):
                         self.driver.quit()
                         self.final_report()
             except TimeoutException:
@@ -115,24 +109,41 @@ class Scanner:
             except ElementNotInteractableException:
                 pass
 
+    def setup_windows(self):
+        query_window = self.driver.current_window_handle
+        self.driver.execute_script("window.open('');")
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        if self.cookies:
+            self.driver.get(self.url)
+            self.driver.add_cookie(self.cookies)
+        else:
+            self.driver.get(self.base_url)
+        html_window = self.driver.current_window_handle
+        return query_window, html_window;
+
     def run_on_url(self):
         print(blue('[*] Running XSS Scan [*]'))
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
         self.driver = webdriver.Chrome(chrome_options=options)
+        query_window, html_window = self.setup_windows()
+        webelement_list = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
         for payload in self.payloads:
+            self.driver.switch_to.window(query_window)
             self.query_scanner(payload)
             if self.html_scan:
-                self.html_scanner(payload)
+                self.driver.switch_to.window(html_window)
+                self.html_scanner(payload, webelement_list, self.base_url)
         self.final_report()
         
-    def count_results(self, raw_params, target_url):
+    def count_results(self, raw_params, target_url, scan_type):
         self.result_count += 1
         print(green('RESULTS: {}'.format(self.result_count).center(50, '='), bold=True))
         print()
         print(blue('[') + green('*', bold=True) + blue(']') + green(' Found XSS Vulnerability'))
         print(blue('[') + green('*', bold=True) + blue(']') + green(' Payload:'), blue(raw_params))
         print(blue('[') + green('*', bold=True) + blue(']') + green(' URL:'), blue(target_url))
+        print(blue('[') + green('*', bold=True) + blue(']') + green(' Scan Type:'), blue(scan_type))
         print()
         print(green(''.center(50, '='), bold=True))
         self.results['results'].append({
@@ -168,4 +179,4 @@ class Scanner:
         else: 
             self.store_results()
         input("Press any key to exit.....")
-        os.exit(0)
+        os._exit(0)
