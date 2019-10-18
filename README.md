@@ -35,6 +35,17 @@ Run the command:
 pip3 install -r requirements.txt
 ```
 
+## Docker Build
+```
+docker build -t <IMAGE NAME> .
+docker build -t xshuden/traxss .
+```
+
+## Docker Run
+```
+docker run --rm -it xshuden/traxss
+```
+
 ## Running Traxss
 
 Traxx can be started with the command:
