@@ -1,7 +1,7 @@
 FROM xshuden/alppython3
 MAINTAINER Furkan SAYIM | furkan.sayim@yandex.com
 
-RUN git clone https://github.com/xShuden/traxss.git /tmp/traxss
+RUN git clone https://github.com/M4cs/traxss.git /tmp/traxss
 
 WORKDIR /tmp/traxss
 
