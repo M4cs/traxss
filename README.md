@@ -60,7 +60,7 @@ This will launch an interactive CLI to guide you through the process.
 
 #### Full Scan w/ HTML
 
-Uses a query scan with 575+ payloads and attempts to find XSS vulnerabilities by passing parameters through the URL. It will also render the HTML and attempt to find manual XSS Vulnerablities (this feature is still in beta).
+Uses a query scan with 575+ payloads and attempts to find XSS vulnerabilities by passing parameters through the URL. It will also render the HTML and attempt to find manual XSS Vulnerabilities (this feature is still in beta).
 
 #### Full Scan w/o HTML
 
