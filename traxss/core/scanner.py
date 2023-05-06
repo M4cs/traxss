@@ -125,6 +125,7 @@ class Scanner:
         print(blue('[*] Running XSS Scan [*]'))
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
         self.driver = webdriver.Chrome(chrome_options=options)
         query_window, html_window = self.setup_windows()
         webelement_list = WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_all_elements_located((By.XPATH, "//input | //textarea | //button")))
